@@ -1,18 +1,17 @@
+import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CrewColors, CrewFonts, CrewRadius, CrewShadow, CrewSpace } from '@/constants/crewTheme';
-import { MOCK_NOTIFICATIONS, type CrewNotification } from '@/data/crewTasks';
-
-const NEW_NOTIFICATIONS = MOCK_NOTIFICATIONS.filter((n) => n.unread);
-const EARLIER_NOTIFICATIONS = MOCK_NOTIFICATIONS.filter((n) => !n.unread);
+import { type CrewNotification } from '@/data/crewTasks';
+import { useCrewJobs } from '@/context/CrewJobsContext';
 
 export default function CrewAlertsScreen() {
-  const insets = useSafeAreaInsets();
-
+  const { notifications } = useCrewJobs();
+  const NEW_NOTIFICATIONS = notifications.filter((n) => n.unread);
+  const EARLIER_NOTIFICATIONS = notifications.filter((n) => !n.unread);
   return (
     <View style={styles.page}>
-      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
+      <View style={styles.header}>
         <Text style={styles.title}>Notifications</Text>
         <Text style={styles.subtitle}>{NEW_NOTIFICATIONS.length} unread notifications</Text>
       </View>
@@ -21,6 +20,10 @@ export default function CrewAlertsScreen() {
         style={styles.list}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}>
+        {notifications.length === 0 ? (
+          <Text style={styles.empty}>No alerts yet. New customer surprises will notify you here.</Text>
+        ) : null}
+
         {NEW_NOTIFICATIONS.length > 0 ? (
           <Section label="NEW">
             {NEW_NOTIFICATIONS.map((n) => (
@@ -41,7 +44,7 @@ export default function CrewAlertsScreen() {
   );
 }
 
-function Section({ label, children }: { label: string; children: React.ReactNode }) {
+function Section({ label, children }: { label: string; children: ReactNode }) {
   return (
     <View style={styles.section}>
       <Text style={styles.sectionLabel}>{label}</Text>
@@ -73,6 +76,7 @@ const styles = StyleSheet.create({
 
   header: {
     paddingHorizontal: CrewSpace.screen,
+    paddingTop: 16,
     paddingBottom: 12,
     backgroundColor: CrewColors.bg,
     borderBottomWidth: 1,
@@ -80,6 +84,7 @@ const styles = StyleSheet.create({
   },
   title: { color: CrewColors.text, fontFamily: CrewFonts.display, fontSize: 26, lineHeight: 32 },
   subtitle: { color: CrewColors.muted, fontFamily: CrewFonts.body, fontSize: 14, marginTop: 2 },
+  empty: { color: CrewColors.muted, fontFamily: CrewFonts.body, fontSize: 14, lineHeight: 20 },
 
   list: { flex: 1 },
   listContent: { paddingHorizontal: CrewSpace.screen, paddingTop: 16, paddingBottom: 24, gap: 20 },

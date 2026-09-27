@@ -61,6 +61,7 @@ export class RemoteAuthService implements AuthService {
       body: JSON.stringify({
         email: input.email.trim(),
         password: input.password,
+        ...(input.role ? { role: input.role } : {}),
       }),
     });
     await saveAuthToken(data.token);

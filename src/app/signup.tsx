@@ -199,8 +199,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
     paddingHorizontal: 8,
-    paddingTop: 18,
-    paddingBottom: 12,
+    paddingTop: 12,
+    paddingBottom: 8,
   },
   switch: {
     color: AuthNight.muted,

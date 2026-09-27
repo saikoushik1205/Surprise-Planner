@@ -60,7 +60,7 @@ export default function AccountScreen() {
           <MenuItem
             icon={<Gift color="#5EEAD4" size={20} />}
             label="My Surprises"
-            onPress={() => router.push('/book/target')}
+            onPress={() => router.push('/surprise' as never)}
           />
 
           {/* Log out — pink text */}
@@ -107,9 +107,9 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.xxl,
-    paddingBottom: Spacing.xxxl,
-    gap: Spacing.xl,
+    paddingTop: Spacing.lg,
+    paddingBottom: Spacing.lg,
+    gap: Spacing.lg,
   },
   avatarSection: {
     alignItems: 'center',

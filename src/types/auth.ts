@@ -15,6 +15,8 @@ export type AuthUser = {
   email: string;
   role?: AuthRole;
   crewStatus?: CrewStatus | null;
+  phone?: string;
+  city?: string;
 };
 
 export function isApprovedCrew(user: AuthUser | null | undefined): boolean {
@@ -24,6 +26,7 @@ export function isApprovedCrew(user: AuthUser | null | undefined): boolean {
 export type LoginInput = {
   email: string;
   password: string;
+  role?: AuthRole;
 };
 
 export type SignupInput = {

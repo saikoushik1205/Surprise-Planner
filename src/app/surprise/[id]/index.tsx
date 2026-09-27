@@ -139,8 +139,8 @@ export default function SurpriseDetailsScreen() {
               <RowDivider />
               <MetaRow
                 icon={<MapPin color={Colors.muted} size={16} />}
-                label="City"
-                value={surprise.city ?? 'City TBD'}
+                label="Location"
+                value={[surprise.venue, surprise.landmark, surprise.city].filter(Boolean).join(' · ') || 'Location TBD'}
               />
               <RowDivider />
               <MetaRow
@@ -229,8 +229,8 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.xl,
-    paddingBottom: Spacing.xxxl,
+    paddingTop: Spacing.lg,
+    paddingBottom: Spacing.lg,
     gap: Spacing.lg,
   },
   placeholder: {

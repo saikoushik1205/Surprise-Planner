@@ -188,14 +188,24 @@ export function RememberRow({
   );
 }
 
-export function SandboxCard({ onAutofill }: { onAutofill: () => void }) {
+export function SandboxCard({
+  onAutofill,
+  email = 'test@surpriseplanner.com',
+  password = 'Test@1234',
+  label = 'Sandbox test credentials',
+}: {
+  onAutofill: () => void;
+  email?: string;
+  password?: string;
+  label?: string;
+}) {
   return (
     <Pressable accessibilityRole="button" onPress={onAutofill} style={styles.sandbox}>
       <Code color="#FFBA20" size={18} />
       <View style={styles.sandboxCopy}>
-        <Text style={styles.sandboxLabel}>Sandbox test credentials</Text>
+        <Text style={styles.sandboxLabel}>{label}</Text>
         <Text numberOfLines={1} style={styles.sandboxValue}>
-          test@surpriseplanner.com • Test@1234
+          {email} • {password}
         </Text>
       </View>
       <View style={styles.autofill}>

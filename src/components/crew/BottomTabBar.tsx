@@ -2,7 +2,7 @@ import { Tabs } from 'expo-router';
 import { Bell, ClipboardList, House, Sparkles, UserRound } from 'lucide-react-native';
 import type { ComponentProps, ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useScreenInsets } from '@/hooks/useScreenInsets';
 
 import { CrewColors, CrewFonts } from '@/constants/crewTheme';
 
@@ -17,10 +17,10 @@ const ICONS: Record<string, (color: string, size: number) => ReactNode> = {
 };
 
 export function BottomTabBar({ state, descriptors, navigation }: CrewTabBarProps) {
-  const insets = useSafeAreaInsets();
+  const insets = useScreenInsets();
 
   return (
-    <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, 8) }]}>
+    <View style={[styles.bar, { paddingBottom: insets.padBottom }]}>
       {state.routes.map((route, index) => {
         const focused = state.index === index;
         const { options } = descriptors[route.key];

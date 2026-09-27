@@ -11,12 +11,11 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { AppScreen } from '@/components/layout/AppScreen';
+import { AppScrollView } from '@/components/layout/AppScrollView';
 import { PasswordRules } from '@/components/auth/PasswordRules';
 import { CrewColors, CrewFonts, CrewRadius, CrewShadow, CrewSpace } from '@/constants/crewTheme';
 import { getAuthErrorMessage, useAuth } from '@/context/AuthContext';
-import { useResponsive } from '@/hooks/useResponsive';
 import { getPasswordChecks, isPasswordStrong, validateEmail } from '@/utils/authValidation';
 
 const CATEGORIES = [
@@ -32,7 +31,6 @@ const TOTAL_STEPS = 3;
 const STEP_TITLES = ['Personal Details', 'Your Category', 'Experience'];
 
 export default function CrewApplyScreen() {
-  const { phoneShell } = useResponsive();
   const { registerCrew } = useAuth();
   const scrollRef = useRef<ScrollView>(null);
 
@@ -112,16 +110,9 @@ export default function CrewApplyScreen() {
 
   /* ── Multi-step form ──────────────────────────────────────────────── */
   return (
-    <View style={styles.page}>
-      <SafeAreaView style={[styles.safe, { maxWidth: phoneShell }]} edges={['top', 'bottom']}>
+    <AppScreen backgroundColor={CrewColors.bg}>
         <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-          <ScrollView
-            ref={scrollRef}
-            style={styles.flex}
-            contentContainerStyle={styles.scroll}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
+          <AppScrollView ref={scrollRef} padded={false} contentContainerStyle={styles.scroll}>
             {/* Brand */}
             <View style={styles.brandRow}>
               <View style={styles.brandIcon}>
@@ -353,10 +344,9 @@ export default function CrewApplyScreen() {
                 </Text>
               </Text>
             )}
-          </ScrollView>
+          </AppScrollView>
         </KeyboardAvoidingView>
-      </SafeAreaView>
-    </View>
+    </AppScreen>
   );
 }
 
@@ -370,22 +360,12 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
 }
 
 const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    backgroundColor: CrewColors.bg,
-    alignItems: 'center',
-  },
-  safe: {
-    flex: 1,
-    width: '100%',
-    backgroundColor: CrewColors.bg,
-  },
-  flex: { flex: 1 },
+  flex: { flex: 1, minHeight: 0 },
 
   scroll: {
     paddingHorizontal: CrewSpace.screen,
-    paddingTop: 24,
-    paddingBottom: 40,
+    paddingTop: 12,
+    paddingBottom: 16,
     gap: 16,
   },
 

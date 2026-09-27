@@ -1,44 +1,45 @@
 import { router } from 'expo-router';
 import { Clock, MapPin } from 'lucide-react-native';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CrewColors, CrewFonts, CrewRadius, CrewShadow, CrewSpace } from '@/constants/crewTheme';
-import {
-  CREW_PERFORMANCE,
-  STATUS_CONFIG,
-  TASK_CATEGORY_EMOJI,
-  TODAY_TASKS,
-} from '@/data/crewTasks';
-
-const STATS = [
-  { label: 'Assigned', value: 4, color: CrewColors.pink },
-  { label: 'In Progress', value: 1, color: '#3b82f6' },
-  { label: 'Completed', value: 0, color: CrewColors.green },
-  { label: 'Pending', value: 2, color: CrewColors.muted },
-];
-
-const PRIORITY = TODAY_TASKS[0];
+import { useAuth } from '@/context/AuthContext';
+import { useCrewJobs } from '@/context/CrewJobsContext';
+import { STATUS_CONFIG, TASK_CATEGORY_EMOJI } from '@/data/crewTasks';
 
 export default function CrewHomeScreen() {
-  const insets = useSafeAreaInsets();
-
+  const { user } = useAuth();
+  const { stats, todayTasks, performance } = useCrewJobs();
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const firstName = (user?.name ?? 'Rahul').split(' ')[0];
+  const initials = (user?.name ?? 'Rahul Sharma')
+    .split(' ')
+    .map((word) => word[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+  const STATS = [
+    { label: 'Assigned', value: stats.assigned, color: CrewColors.pink },
+    { label: 'In Progress', value: stats.inProgress, color: '#3b82f6' },
+    { label: 'Completed', value: stats.completed, color: CrewColors.green },
+    { label: 'Pending', value: stats.pending, color: CrewColors.muted },
+  ];
+  const PRIORITY = todayTasks[0];
 
   return (
     <ScrollView
       style={styles.page}
-      contentContainerStyle={[styles.content, { paddingTop: insets.top + 16, paddingBottom: 32 }]}
+      contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}>
 
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.avatar}>
-          <Text style={styles.avatarText}>RS</Text>
+          <Text style={styles.avatarText}>{initials}</Text>
         </View>
         <View style={styles.greetBlock}>
-          <Text style={styles.greet}>{greeting}, Rahul 👋</Text>
+          <Text style={styles.greet}>{greeting}, {firstName} 👋</Text>
           <Text style={styles.greetSub}>Here&apos;s what needs your attention today.</Text>
         </View>
       </View>
@@ -93,7 +94,10 @@ export default function CrewHomeScreen() {
           </Text>
         </View>
         <View style={styles.taskList}>
-          {TODAY_TASKS.slice(0, 4).map((task) => {
+          {todayTasks.length === 0 ? (
+            <Text style={styles.emptyHint}>No customer surprises assigned yet. Launch one from the customer app.</Text>
+          ) : null}
+          {todayTasks.slice(0, 4).map((task) => {
             const cfg = STATUS_CONFIG[task.status];
             return (
               <View key={task.id} style={styles.taskCard}>
@@ -126,12 +130,12 @@ export default function CrewHomeScreen() {
         <View>
           <Text style={styles.perfLabel}>Your performance</Text>
           <Text style={styles.perfRating}>
-            <Text style={styles.perfBig}>{CREW_PERFORMANCE.rating}</Text>
+            <Text style={styles.perfBig}>{performance.rating}</Text>
             <Text style={styles.perfSmall}> / 5.0</Text>
           </Text>
         </View>
         <View style={styles.perfBadge}>
-          <Text style={styles.perfBadgeText}>↗ {CREW_PERFORMANCE.completed} jobs done</Text>
+          <Text style={styles.perfBadgeText}>↗ {performance.completed} jobs done</Text>
         </View>
       </View>
     </ScrollView>
@@ -140,7 +144,7 @@ export default function CrewHomeScreen() {
 
 const styles = StyleSheet.create({
   page: { flex: 1, backgroundColor: CrewColors.bg },
-  content: { paddingHorizontal: CrewSpace.screen, gap: 24 },
+  content: { paddingHorizontal: CrewSpace.screen, paddingTop: 16, paddingBottom: 16, gap: 20 },
 
   // Header
   header: { flexDirection: 'row', alignItems: 'center', gap: 12 },
@@ -153,6 +157,7 @@ const styles = StyleSheet.create({
   greetBlock: { flex: 1 },
   greet: { color: CrewColors.text, fontFamily: CrewFonts.display, fontSize: 17, lineHeight: 22 },
   greetSub: { color: CrewColors.muted, fontFamily: CrewFonts.body, fontSize: 13, lineHeight: 18, marginTop: 2 },
+  emptyHint: { color: CrewColors.muted, fontFamily: CrewFonts.body, fontSize: 13, lineHeight: 18 },
 
   // Stats
   statsRow: { flexDirection: 'row', gap: 8 },

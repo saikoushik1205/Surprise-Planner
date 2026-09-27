@@ -2,11 +2,12 @@ import { router, usePathname } from 'expo-router';
 import { Bell, Compass, LayoutGrid, Radar, Rocket, Sparkles, UserRound } from 'lucide-react-native';
 import { useState, type ReactNode } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Colors, Fonts } from '@/constants/theme';
+import { AppScreen } from '@/components/layout/AppScreen';
+import { Colors, Fonts, Spacing } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useResponsive } from '@/hooks/useResponsive';
+import { useScreenInsets } from '@/hooks/useScreenInsets';
 
 const TABS = [
   { id: 'explore', label: 'Explore', href: '/' },
@@ -33,6 +34,7 @@ export function AppFrame({ children, wide = false, hideTicker = false }: AppFram
   const { user, logout } = useAuth();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const insets = useScreenInsets();
   const { phoneShell, wideShell } = useResponsive();
   const shellMax = wide ? wideShell : phoneShell;
 
@@ -62,11 +64,7 @@ export function AppFrame({ children, wide = false, hideTicker = false }: AppFram
   }
 
   return (
-    <View style={styles.page}>
-      <SafeAreaView
-        {...({ className: 'app-shell' } as object)}
-        style={[styles.shell, { maxWidth: shellMax, width: '100%' }]}
-        edges={['top', 'left', 'right']}>
+    <AppScreen edges={['top']} maxWidth={shellMax} backgroundColor="#07070A">
       {hideTicker ? null : (
         <View style={styles.ticker}>
           <View style={styles.liveDot} />
@@ -98,7 +96,7 @@ export function AppFrame({ children, wide = false, hideTicker = false }: AppFram
         </View>
       </View>
       <View style={styles.body}>{children}</View>
-      <View style={styles.tabs}>
+      <View style={[styles.tabs, { paddingBottom: insets.padBottom }]}>
         {TABS.map((tab) => {
           const active = tabActive(tab.id);
           const color = active ? Colors.pink : '#A1A1AA';
@@ -117,7 +115,7 @@ export function AppFrame({ children, wide = false, hideTicker = false }: AppFram
       </View>
 
       <Modal transparent animationType="fade" visible={menuOpen} onRequestClose={() => setMenuOpen(false)}>
-        <Pressable style={styles.overlay} onPress={() => setMenuOpen(false)}>
+        <Pressable style={[styles.overlay, { paddingTop: insets.padTop + 56 }]} onPress={() => setMenuOpen(false)}>
           <Pressable style={styles.sheet} onPress={() => undefined}>
             {MENU.map((item) => (
               <Pressable key={item.href} accessibilityRole="button" onPress={() => go(item.href)} style={styles.menuLink}>
@@ -142,8 +140,7 @@ export function AppFrame({ children, wide = false, hideTicker = false }: AppFram
           </Pressable>
         </Pressable>
       </Modal>
-    </SafeAreaView>
-    </View>
+    </AppScreen>
   );
 }
 
@@ -171,26 +168,6 @@ function TabIcon({ id, active }: { id: (typeof TABS)[number]['id']; active: bool
 }
 
 const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-    maxHeight: '100%',
-    backgroundColor: '#07070A',
-    alignItems: 'center',
-    overflow: 'hidden',
-  },
-  shell: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-    maxHeight: '100%',
-    backgroundColor: Colors.ink,
-    overflow: 'hidden',
-    borderLeftWidth: StyleSheet.hairlineWidth,
-    borderRightWidth: StyleSheet.hairlineWidth,
-    borderColor: '#22202A',
-  },
   ticker: {
     zIndex: 3,
     flexDirection: 'row',
@@ -223,7 +200,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: Spacing.sm,
     borderBottomWidth: 1,
     borderBottomColor: '#25232D',
     backgroundColor: 'rgba(20, 19, 24, 0.94)',
@@ -236,8 +213,8 @@ const styles = StyleSheet.create({
   wordmark: {
     color: '#FFFFFF',
     fontFamily: Fonts.displayExtra,
-    fontSize: 24,
-    lineHeight: 32,
+    fontSize: 20,
+    lineHeight: 24,
     letterSpacing: -0.6,
   },
   logoDot: {
@@ -274,9 +251,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#262432',
     backgroundColor: 'rgba(20, 19, 24, 0.96)',
-    paddingTop: 8,
-    paddingBottom: 10,
-    paddingHorizontal: 8,
+    paddingTop: Spacing.sm,
+    paddingHorizontal: Spacing.sm,
   },
   tab: {
     alignItems: 'center',
@@ -304,7 +280,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.overlay,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingTop: 88,
+    paddingTop: 0,
   },
   sheet: {
     width: '100%',

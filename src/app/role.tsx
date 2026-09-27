@@ -1,14 +1,16 @@
 import { router } from 'expo-router';
 import { ArrowRight, Gift, Lock, Shield, Sparkles, Star, Users, Zap } from 'lucide-react-native';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { AppScreen } from '@/components/layout/AppScreen';
+import { AppScrollView } from '@/components/layout/AppScrollView';
 import { Fonts } from '@/constants/theme';
 import { useResponsive } from '@/hooks/useResponsive';
 import type { AuthRole } from '@/types/auth';
 
 export default function RoleScreen() {
-  const { phoneShell } = useResponsive();
+  const { height, phoneShell } = useResponsive();
+  const allowScroll = height > 0 && height < 640;
 
   function openCustomer(mode: 'login' | 'signup') {
     router.push({ pathname: mode === 'login' ? '/login' : '/signup', params: { role: 'customer' satisfies AuthRole } });
@@ -22,15 +24,112 @@ export default function RoleScreen() {
     router.push({ pathname: '/login', params: { role: 'crew' satisfies AuthRole, next: '/crew' } });
   }
 
-  return (
-    <View style={styles.page}>
-      <SafeAreaView style={[styles.shell, { maxWidth: phoneShell }]} edges={['top', 'left', 'right', 'bottom']}>
+  const body = (
+    <>
+      <View style={styles.hero}>
+        <View style={styles.heroBadge}>
+          <Star color="#FF4992" size={10} fill="#FF4992" />
+          <Text style={styles.heroBadgeText}>India&apos;s Surprise Network</Text>
+        </View>
+        <Text style={styles.headline}>Make Every Surprise Special</Text>
+        <Text style={styles.sub}>Choose how you&apos;d like to use Surprise Planner.</Text>
+      </View>
 
-        {/* Top bar */}
+      <View style={styles.cards}>
+        <View style={styles.customerCard}>
+          <View pointerEvents="none" style={styles.glowPinkTop} />
+          <View pointerEvents="none" style={styles.glowPinkCorner} />
+
+          <View style={styles.cardHeader}>
+            <View style={styles.iconRingPink}>
+              <Gift color="#FF4992" size={20} />
+            </View>
+            <View style={styles.cardBadge}>
+              <Text style={styles.cardBadgeText}>Most Popular</Text>
+            </View>
+          </View>
+
+          <Text style={styles.cardTitle}>Continue as Customer</Text>
+          <Text style={styles.cardCopy}>
+            Plan unforgettable surprises — birthday raids, romantic drops, Bollywood moments — delivered by a real crew.
+          </Text>
+
+          <View style={styles.pills}>
+            <Pill label="🎂 Cake Raids" />
+            <Pill label="💐 Flower Drops" />
+            <Pill label="🎬 Live Reveals" />
+          </View>
+
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => openCustomer('signup')}
+            style={({ pressed }) => [styles.primaryBtn, pressed && styles.pressed]}
+          >
+            <Text style={styles.primaryBtnLabel}>Sign Up as Customer</Text>
+            <ArrowRight color="#fff" size={16} />
+          </Pressable>
+
+          <Pressable accessibilityRole="button" onPress={() => openCustomer('login')} style={styles.switchBtn}>
+            <Text style={styles.switchText}>
+              Already have an account?{'  '}
+              <Text style={styles.switchLinkPink}>Sign In →</Text>
+            </Text>
+          </Pressable>
+        </View>
+
+        <View style={styles.crewCard}>
+          <View pointerEvents="none" style={styles.glowVioletTop} />
+          <View pointerEvents="none" style={styles.glowVioletCorner} />
+
+          <View style={styles.cardHeader}>
+            <View style={styles.iconRingViolet}>
+              <Shield color="#a78bfa" size={20} />
+            </View>
+          </View>
+
+          <Text style={styles.cardTitle}>Continue as Crew</Text>
+          <Text style={styles.cardCopy}>
+            Join our on-ground crew. Execute surprise missions, earn per job, and be part of something unforgettable.
+          </Text>
+
+          <View style={styles.statsRow}>
+            <StatChip icon={<Users color="#a78bfa" size={11} />} label="120+ Members" />
+            <StatChip icon={<Zap color="#a78bfa" size={11} />} label="6 Cities" />
+            <StatChip icon={<Star color="#a78bfa" size={11} fill="#a78bfa" />} label="4.8 Rating" />
+          </View>
+
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => openCrew('signup')}
+            style={({ pressed }) => [styles.crewBtn, pressed && styles.pressed]}
+          >
+            <Shield color="#a78bfa" size={15} />
+            <Text style={styles.crewBtnLabel}>Register as Crew</Text>
+            <ArrowRight color="#a78bfa" size={15} />
+          </Pressable>
+
+          <Pressable accessibilityRole="button" onPress={() => openCrew('login')} style={styles.switchBtn}>
+            <Text style={styles.switchText}>
+              Already a crew member?{'  '}
+              <Text style={styles.switchLinkViolet}>Sign In →</Text>
+            </Text>
+          </Pressable>
+        </View>
+      </View>
+
+      <View style={styles.trust}>
+        <Lock color="#4B5563" size={11} />
+        <Text style={styles.trustText}>Secured • Verified • Trusted across India</Text>
+      </View>
+    </>
+  );
+
+  return (
+    <AppScreen backgroundColor="#050508" maxWidth={phoneShell}>
         <View style={styles.topBar}>
           <View style={styles.topLead}>
             <View style={styles.mark}>
-              <Sparkles color="#fff" size={15} />
+              <Sparkles color="#fff" size={14} />
             </View>
             <Text style={styles.topTitle}>Surprise Planner</Text>
           </View>
@@ -40,115 +139,14 @@ export default function RoleScreen() {
           </View>
         </View>
 
-        <ScrollView
-          bounces={false}
-          contentContainerStyle={styles.body}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* Hero */}
-          <View style={styles.hero}>
-            <View style={styles.heroBadge}>
-              <Star color="#FF4992" size={11} fill="#FF4992" />
-              <Text style={styles.heroBadgeText}>India&apos;s Surprise Network</Text>
-            </View>
-            <Text style={styles.headline}>Make Every Surprise Special</Text>
-            <Text style={styles.sub}>Choose how you&apos;d like to use Surprise Planner.</Text>
-          </View>
-
-          {/* Customer card */}
-          <View style={styles.customerCard}>
-            {/* Glow layers */}
-            <View pointerEvents="none" style={styles.glowPinkTop} />
-            <View pointerEvents="none" style={styles.glowPinkCorner} />
-
-            {/* Header row */}
-            <View style={styles.cardHeader}>
-              <View style={styles.iconRingPink}>
-                <Gift color="#FF4992" size={22} />
-              </View>
-              <View style={styles.cardBadge}>
-                <Text style={styles.cardBadgeText}>Most Popular</Text>
-              </View>
-            </View>
-
-            <Text style={styles.cardTitle}>Continue as Customer</Text>
-            <Text style={styles.cardCopy}>
-              Plan unforgettable surprises — birthday raids, romantic drops, Bollywood moments — delivered by a real crew.
-            </Text>
-
-            {/* Feature pills */}
-            <View style={styles.pills}>
-              <Pill label="🎂 Cake Raids" />
-              <Pill label="💐 Flower Drops" />
-              <Pill label="🎬 Live Reveals" />
-            </View>
-
-            <Pressable
-              accessibilityRole="button"
-              onPress={() => openCustomer('signup')}
-              style={({ pressed }) => [styles.primaryBtn, pressed && styles.pressed]}
-            >
-              <Text style={styles.primaryBtnLabel}>Sign Up as Customer</Text>
-              <ArrowRight color="#fff" size={18} />
-            </Pressable>
-
-            <Pressable accessibilityRole="button" onPress={() => openCustomer('login')} style={styles.switchBtn}>
-              <Text style={styles.switchText}>
-                Already have an account?{'  '}
-                <Text style={styles.switchLinkPink}>Sign In →</Text>
-              </Text>
-            </Pressable>
-          </View>
-
-          {/* Crew card */}
-          <View style={styles.crewCard}>
-            <View pointerEvents="none" style={styles.glowVioletTop} />
-            <View pointerEvents="none" style={styles.glowVioletCorner} />
-
-            <View style={styles.cardHeader}>
-              <View style={styles.iconRingViolet}>
-                <Shield color="#a78bfa" size={22} />
-              </View>
-            </View>
-
-            <Text style={styles.cardTitle}>Continue as Crew</Text>
-            <Text style={styles.cardCopy}>
-              Join our on-ground crew. Execute surprise missions, earn per job, and be part of something unforgettable.
-            </Text>
-
-            {/* Stats row */}
-            <View style={styles.statsRow}>
-              <StatChip icon={<Users color="#a78bfa" size={13} />} label="120+ Members" />
-              <StatChip icon={<Zap color="#a78bfa" size={13} />} label="6 Cities" />
-              <StatChip icon={<Star color="#a78bfa" size={13} fill="#a78bfa" />} label="4.8 Rating" />
-            </View>
-
-            <Pressable
-              accessibilityRole="button"
-              onPress={() => openCrew('signup')}
-              style={({ pressed }) => [styles.crewBtn, pressed && styles.pressed]}
-            >
-              <Shield color="#a78bfa" size={16} />
-              <Text style={styles.crewBtnLabel}>Register as Crew</Text>
-              <ArrowRight color="#a78bfa" size={16} />
-            </Pressable>
-
-            <Pressable accessibilityRole="button" onPress={() => openCrew('login')} style={styles.switchBtn}>
-              <Text style={styles.switchText}>
-                Already a crew member?{'  '}
-                <Text style={styles.switchLinkViolet}>Sign In →</Text>
-              </Text>
-            </Pressable>
-          </View>
-
-          {/* Trust row */}
-          <View style={styles.trust}>
-            <Lock color="#4B5563" size={11} />
-            <Text style={styles.trustText}>Secured • Verified • Trusted across India</Text>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </View>
+        {allowScroll ? (
+          <AppScrollView padded={false} contentContainerStyle={styles.body}>
+            {body}
+          </AppScrollView>
+        ) : (
+          <View style={styles.body}>{body}</View>
+        )}
+    </AppScreen>
   );
 }
 
@@ -170,24 +168,12 @@ function StatChip({ icon, label }: { icon: React.ReactNode; label: string }) {
 }
 
 const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    backgroundColor: '#050508',
-    alignItems: 'center',
-  },
-  shell: {
-    flex: 1,
-    width: '100%',
-    backgroundColor: '#07070A',
-  },
-
-  /* Top bar */
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 8,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'rgba(255,255,255,0.06)',
   },
@@ -197,9 +183,9 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   mark: {
-    width: 30,
-    height: 30,
-    borderRadius: 9,
+    width: 28,
+    height: 28,
+    borderRadius: 8,
     backgroundColor: '#FF4992',
     alignItems: 'center',
     justifyContent: 'center',
@@ -208,52 +194,52 @@ const styles = StyleSheet.create({
   topTitle: {
     color: '#FFFFFF',
     fontFamily: Fonts.uiBold,
-    fontSize: 17,
+    fontSize: 16,
     letterSpacing: -0.2,
   },
   liveChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5,
+    gap: 4,
     backgroundColor: 'rgba(16,185,129,0.12)',
     borderWidth: 1,
     borderColor: 'rgba(16,185,129,0.3)',
     borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
   },
   liveText: {
     color: '#10B981',
     fontFamily: Fonts.jakartaSemi,
-    fontSize: 11,
+    fontSize: 10,
     letterSpacing: 0.4,
   },
 
-  /* Body — fills remaining space, no scroll */
   body: {
     flexGrow: 1,
+    flex: 1,
     paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 12,
-    gap: 12,
+    paddingTop: 10,
+    paddingBottom: 8,
     justifyContent: 'space-between',
+    gap: 10,
   },
 
-  /* Hero */
   hero: {
     alignItems: 'center',
-    gap: 6,
+    gap: 4,
+    marginVertical: 2,
   },
   heroBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5,
+    gap: 4,
     backgroundColor: 'rgba(255,73,146,0.10)',
     borderWidth: 1,
     borderColor: 'rgba(255,73,146,0.25)',
     borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingHorizontal: 9,
+    paddingVertical: 3,
   },
   heroBadgeText: {
     color: '#FF4992',
@@ -265,23 +251,27 @@ const styles = StyleSheet.create({
   headline: {
     color: '#FFFFFF',
     fontFamily: Fonts.displayExtra,
-    fontSize: 22,
-    lineHeight: 27,
+    fontSize: 20,
+    lineHeight: 24,
     letterSpacing: -0.4,
     textAlign: 'center',
   },
   sub: {
     color: '#94A3B8',
     fontFamily: Fonts.jakarta,
-    fontSize: 13,
+    fontSize: 12,
+    lineHeight: 16,
     textAlign: 'center',
   },
 
-  /* Customer card */
+  cards: {
+    gap: 10,
+  },
   customerCard: {
     backgroundColor: '#111220',
-    borderRadius: 20,
-    padding: 16,
+    borderRadius: 18,
+    paddingVertical: 14,
+    paddingHorizontal: 14,
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: 'rgba(255,73,146,0.2)',
@@ -306,11 +296,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,45,120,0.08)',
   },
 
-  /* Crew card */
   crewCard: {
     backgroundColor: '#0E0D1C',
-    borderRadius: 20,
-    padding: 16,
+    borderRadius: 18,
+    paddingVertical: 14,
+    paddingHorizontal: 14,
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: 'rgba(124,58,237,0.3)',
@@ -335,17 +325,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(124,58,237,0.08)',
   },
 
-  /* Shared card parts */
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginBottom: 6,
   },
   iconRingPink: {
-    width: 40,
-    height: 40,
-    borderRadius: 13,
+    width: 36,
+    height: 36,
+    borderRadius: 12,
     backgroundColor: 'rgba(255,73,146,0.12)',
     borderWidth: 1,
     borderColor: 'rgba(255,73,146,0.3)',
@@ -353,9 +342,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   iconRingViolet: {
-    width: 40,
-    height: 40,
-    borderRadius: 13,
+    width: 36,
+    height: 36,
+    borderRadius: 12,
     backgroundColor: 'rgba(124,58,237,0.14)',
     borderWidth: 1,
     borderColor: 'rgba(124,58,237,0.35)',
@@ -367,78 +356,76 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255,73,146,0.3)',
     borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
   },
   cardBadgeText: {
     color: '#FF4992',
     fontFamily: Fonts.jakartaSemi,
-    fontSize: 11,
+    fontSize: 10,
   },
   cardTitle: {
     color: '#FFFFFF',
     fontFamily: Fonts.uiBold,
-    fontSize: 17,
+    fontSize: 16,
     letterSpacing: -0.2,
-    marginBottom: 4,
+    marginBottom: 2,
   },
   cardCopy: {
     color: '#94A3B8',
     fontFamily: Fonts.jakarta,
     fontSize: 12,
-    lineHeight: 17,
-    marginBottom: 10,
+    lineHeight: 16,
+    marginBottom: 8,
   },
 
-  /* Pills */
   pills: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 6,
-    marginBottom: 12,
+    gap: 5,
+    marginBottom: 8,
   },
   pill: {
     backgroundColor: 'rgba(255,255,255,0.05)',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.1)',
     borderRadius: 999,
-    paddingHorizontal: 9,
-    paddingVertical: 3,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
   },
   pillText: {
     color: '#CBD5E1',
     fontFamily: Fonts.jakartaSemi,
-    fontSize: 11,
+    fontSize: 10,
   },
 
-  /* Stats */
   statsRow: {
     flexDirection: 'row',
-    gap: 7,
-    marginBottom: 12,
+    gap: 6,
+    marginBottom: 8,
   },
   statChip: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 5,
+    gap: 4,
     backgroundColor: 'rgba(124,58,237,0.1)',
     borderWidth: 1,
     borderColor: 'rgba(124,58,237,0.25)',
-    borderRadius: 12,
-    paddingVertical: 8,
-    paddingHorizontal: 6,
+    borderRadius: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 4,
   },
   statChipText: {
     color: '#a78bfa',
     fontFamily: Fonts.jakartaSemi,
-    fontSize: 11,
+    fontSize: 10,
   },
 
-  /* Buttons */
   primaryBtn: {
-    minHeight: 46,
+    minHeight: 42,
+    paddingVertical: 10,
     borderRadius: 14,
     backgroundColor: '#FF4992',
     flexDirection: 'row',
@@ -454,7 +441,8 @@ const styles = StyleSheet.create({
     letterSpacing: -0.1,
   },
   crewBtn: {
-    minHeight: 46,
+    minHeight: 42,
+    paddingVertical: 10,
     borderRadius: 14,
     backgroundColor: 'rgba(124,58,237,0.15)',
     borderWidth: 1.5,
@@ -476,15 +464,15 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.98 }],
   },
   switchBtn: {
-    minHeight: 34,
+    minHeight: 28,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 8,
+    marginTop: 4,
   },
   switchText: {
     color: '#64748B',
     fontFamily: Fonts.jakarta,
-    fontSize: 13,
+    fontSize: 12,
     textAlign: 'center',
   },
   switchLinkPink: {
@@ -496,12 +484,13 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.jakartaSemi,
   },
 
-  /* Trust */
   trust: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
+    paddingTop: 2,
+    paddingBottom: 2,
   },
   trustText: {
     color: '#374151',

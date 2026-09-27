@@ -1,73 +1,57 @@
 import { router } from 'expo-router';
 import { Clock3, Shield } from 'lucide-react-native';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { AppScreen } from '@/components/layout/AppScreen';
 import { CrewColors, CrewFonts, CrewRadius, CrewShadow, CrewSpace } from '@/constants/crewTheme';
-import { useResponsive } from '@/hooks/useResponsive';
 
 export default function CrewPendingScreen() {
-  const { phoneShell } = useResponsive();
-
   return (
-    <View style={styles.page}>
-      <SafeAreaView style={[styles.safe, { maxWidth: phoneShell }]} edges={['top', 'bottom']}>
-        <View style={styles.body}>
-          <View style={styles.brandRow}>
-            <View style={styles.brandIcon}>
-              <Shield color={CrewColors.pink} size={18} fill="rgba(255,45,120,0.15)" />
-            </View>
-            <View>
-              <Text style={styles.brandName}>Surprise Planner</Text>
-              <Text style={styles.brandSub}>Crew Registration</Text>
-            </View>
+    <AppScreen backgroundColor={CrewColors.bg}>
+      <View style={styles.body}>
+        <View style={styles.brandRow}>
+          <View style={styles.brandIcon}>
+            <Shield color={CrewColors.pink} size={18} fill="rgba(255,45,120,0.15)" />
           </View>
-
-          <View style={styles.iconWrap}>
-            <Clock3 color={CrewColors.pink} size={36} />
+          <View>
+            <Text style={styles.brandName}>Surprise Planner</Text>
+            <Text style={styles.brandSub}>Crew Registration</Text>
           </View>
-
-          <Text style={styles.title}>Registration Submitted</Text>
-          <Text style={styles.bodyCopy}>
-            Thanks for registering as a Crew member. We&apos;ve received your details and our team will review your
-            registration.
-          </Text>
-          <Text style={styles.soon}>We&apos;ll get back to you soon.</Text>
-
-          <View style={styles.status}>
-            <View style={styles.statusDot} />
-            <Text style={styles.statusLabel}>Status: Under Review</Text>
-          </View>
-
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => router.replace('/role')}
-            style={({ pressed }) => [styles.cta, pressed && styles.pressed]}
-          >
-            <Text style={styles.ctaLabel}>Back to Home</Text>
-          </Pressable>
         </View>
-      </SafeAreaView>
-    </View>
+
+        <View style={styles.iconWrap}>
+          <Clock3 color={CrewColors.pink} size={36} />
+        </View>
+
+        <Text style={styles.title}>Registration Submitted</Text>
+        <Text style={styles.bodyCopy}>
+          Thanks for registering as a Crew member. We&apos;ve received your details and our team will review your
+          registration.
+        </Text>
+        <Text style={styles.soon}>We&apos;ll get back to you soon.</Text>
+
+        <View style={styles.status}>
+          <View style={styles.statusDot} />
+          <Text style={styles.statusLabel}>Status: Under Review</Text>
+        </View>
+
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => router.replace('/role')}
+          style={({ pressed }) => [styles.cta, pressed && styles.pressed]}
+        >
+          <Text style={styles.ctaLabel}>Back to Home</Text>
+        </Pressable>
+      </View>
+    </AppScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    backgroundColor: CrewColors.bg,
-    alignItems: 'center',
-  },
-  safe: {
-    flex: 1,
-    width: '100%',
-    backgroundColor: CrewColors.bg,
-  },
   body: {
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: CrewSpace.screen,
-    paddingBottom: 32,
     gap: 14,
   },
   brandRow: {
@@ -152,9 +136,11 @@ const styles = StyleSheet.create({
   },
   cta: {
     marginTop: 10,
+    minHeight: 48,
+    justifyContent: 'center',
     backgroundColor: CrewColors.pink,
     borderRadius: CrewRadius.pill,
-    paddingVertical: 15,
+    paddingVertical: 12,
     alignItems: 'center',
     boxShadow: CrewShadow.cta,
   },

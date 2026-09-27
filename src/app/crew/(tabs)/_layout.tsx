@@ -5,6 +5,7 @@ import { BottomTabBar } from '@/components/crew/BottomTabBar';
 import { CrewShell } from '@/components/crew/CrewScreen';
 import { CrewColors } from '@/constants/crewTheme';
 import { useAuth } from '@/context/AuthContext';
+import { CrewJobsProvider } from '@/context/CrewJobsContext';
 import { isApprovedCrew } from '@/types/auth';
 
 export default function CrewTabsLayout() {
@@ -30,15 +31,17 @@ export default function CrewTabsLayout() {
 
   return (
     <CrewShell>
-      <Tabs
-        tabBar={(props) => <BottomTabBar {...props} />}
-        screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: CrewColors.bg } }}>
-        <Tabs.Screen name="index" options={{ title: 'Home' }} />
-        <Tabs.Screen name="tasks" options={{ title: 'Tasks' }} />
-        <Tabs.Screen name="surprises" options={{ title: 'Surprises' }} />
-        <Tabs.Screen name="alerts" options={{ title: 'Alerts' }} />
-        <Tabs.Screen name="profile" options={{ title: 'Profile' }} />
-      </Tabs>
+      <CrewJobsProvider>
+        <Tabs
+          tabBar={(props) => <BottomTabBar {...props} />}
+          screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: CrewColors.bg } }}>
+          <Tabs.Screen name="index" options={{ title: 'Home' }} />
+          <Tabs.Screen name="tasks" options={{ title: 'Tasks' }} />
+          <Tabs.Screen name="surprises" options={{ title: 'Surprises' }} />
+          <Tabs.Screen name="alerts" options={{ title: 'Alerts' }} />
+          <Tabs.Screen name="profile" options={{ title: 'Profile' }} />
+        </Tabs>
+      </CrewJobsProvider>
     </CrewShell>
   );
 }

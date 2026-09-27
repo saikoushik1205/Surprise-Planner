@@ -26,6 +26,7 @@ export default function BookWhereScreen() {
   const [picked, setPicked] = useState(Boolean(draft.area));
   const [searching, setSearching] = useState(false);
   const [locating, setLocating] = useState(false);
+  const [mapFailed, setMapFailed] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const pin = useMemo(() => {
@@ -111,6 +112,7 @@ export default function BookWhereScreen() {
       placeId: next.id,
       venue: 'home',
     });
+    setMapFailed(false);
     setQuery(next.label);
     setHits([]);
     setPicked(true);
@@ -220,8 +222,20 @@ export default function BookWhereScreen() {
               style: { border: 0, width: '100%', height: '100%' },
               title: 'Dropzone map',
             })
+          ) : mapFailed ? (
+            <View style={styles.mapFallback}>
+              <MapPin color={Colors.pink} size={22} />
+              <Text style={styles.mapFallbackText}>
+                {pin.lat.toFixed(4)}, {pin.lng.toFixed(4)}
+              </Text>
+            </View>
           ) : (
-            <Image contentFit="cover" source={{ uri: mapImageUrl(pin.lat, pin.lng) }} style={styles.mapImage} />
+            <Image
+              contentFit="cover"
+              onError={() => setMapFailed(true)}
+              source={{ uri: mapImageUrl(pin.lat, pin.lng) }}
+              style={styles.mapImage}
+            />
           )}
           <View pointerEvents="none" style={styles.mapShade} />
           <View style={styles.pinBadge}>
@@ -445,6 +459,18 @@ const styles = StyleSheet.create({
   mapImage: {
     width: '100%',
     height: '100%',
+  },
+  mapFallback: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: '#14151C',
+  },
+  mapFallbackText: {
+    color: Colors.muted,
+    fontFamily: Fonts.jakartaSemi,
+    fontSize: 12,
   },
   mapShade: {
     ...StyleSheet.absoluteFill,

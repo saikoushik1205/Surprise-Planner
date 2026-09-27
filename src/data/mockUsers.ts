@@ -4,6 +4,14 @@ export const TEST_ACCOUNT = {
   name: 'Test Planner',
 } as const;
 
+export const TEST_CREW_ACCOUNT = {
+  email: 'rahul@surpriseplanner.com',
+  password: 'Test@1234',
+  name: 'Rahul Sharma',
+  phone: '+91 98765 43210',
+  city: 'Hyderabad',
+} as const;
+
 export type MockUserRecord = {
   id: string;
   name: string;

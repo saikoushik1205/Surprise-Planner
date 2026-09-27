@@ -5,16 +5,14 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
-import { Fonts, Layout } from '@/constants/theme';
+import { AppScreen } from '@/components/layout/AppScreen';
+import { AppScrollView } from '@/components/layout/AppScrollView';
+import { Fonts, Spacing } from '@/constants/theme';
 import type { AuthRole } from '@/types/auth';
-import { useResponsive } from '@/hooks/useResponsive';
 
 export const AuthNight = {
   page: '#07070A',
@@ -39,8 +37,6 @@ type MissionAuthProps = {
 };
 
 export function MissionAuth({ mode, next, role, children, footer }: MissionAuthProps) {
-  const { phoneShell } = useResponsive();
-
   function go(href: '/login' | '/signup') {
     const params: Record<string, string> = {};
     if (next) {
@@ -57,8 +53,7 @@ export function MissionAuth({ mode, next, role, children, footer }: MissionAuthP
   }
 
   return (
-    <View style={styles.page}>
-      <SafeAreaView style={[styles.shell, { maxWidth: phoneShell }]} edges={['top', 'left', 'right']}>
+    <AppScreen backgroundColor={AuthNight.page}>
         <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <View style={styles.topBar}>
             <View style={styles.topCopy}>
@@ -76,12 +71,7 @@ export function MissionAuth({ mode, next, role, children, footer }: MissionAuthP
             </View>
           </View>
 
-          <ScrollView
-            style={styles.flex}
-            contentContainerStyle={styles.scroll}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
+          <AppScrollView padded={false} contentContainerStyle={styles.scroll}>
             <View style={styles.card}>
               <View pointerEvents="none" style={styles.glowA} />
               <View pointerEvents="none" style={styles.glowB} />
@@ -125,38 +115,23 @@ export function MissionAuth({ mode, next, role, children, footer }: MissionAuthP
               {children}
             </View>
             {footer}
-          </ScrollView>
+          </AppScrollView>
         </KeyboardAvoidingView>
-      </SafeAreaView>
-    </View>
+    </AppScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    backgroundColor: AuthNight.page,
-    alignItems: 'center',
-  },
-  shell: {
-    flex: 1,
-    width: '100%',
-    backgroundColor: AuthNight.base,
-    overflow: 'hidden',
-    borderLeftWidth: StyleSheet.hairlineWidth,
-    borderRightWidth: StyleSheet.hairlineWidth,
-    borderColor: '#22202A',
-    maxWidth: Layout.phone,
-  },
   flex: {
     flex: 1,
+    minHeight: 0,
   },
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
     paddingHorizontal: 12,
-    paddingVertical: 10,
+    paddingVertical: 8,
     backgroundColor: 'rgba(20, 22, 34, 0.92)',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: AuthNight.glass,
@@ -199,16 +174,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   scroll: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 28,
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.md,
+    paddingBottom: Spacing.md,
   },
   card: {
     position: 'relative',
     overflow: 'hidden',
     backgroundColor: AuthNight.card,
     borderRadius: 24,
-    padding: 20,
+    padding: Spacing.gutter,
     borderWidth: 1,
     borderColor: AuthNight.glass,
   },

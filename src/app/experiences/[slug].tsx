@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     backgroundColor: Night.base,
   },
   body: {
-    paddingBottom: 24,
+    paddingBottom: 16,
   },
   hero: {
     width: '100%',

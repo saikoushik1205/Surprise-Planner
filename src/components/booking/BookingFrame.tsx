@@ -1,12 +1,12 @@
 import { ArrowRight, PartyPopper, UserRound } from 'lucide-react-native';
 import type { ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Colors, Fonts } from '@/constants/theme';
+import { AppScreen } from '@/components/layout/AppScreen';
+import { AppScrollView } from '@/components/layout/AppScrollView';
+import { Colors, Fonts, Spacing } from '@/constants/theme';
 import { quoteBooking } from '@/data/booking';
 import { usePlan } from '@/context/PlanContext';
-import { useResponsive } from '@/hooks/useResponsive';
 import { formatBudget } from '@/utils/format';
 
 type BookingFrameProps = {
@@ -26,13 +26,11 @@ export function BookingFrame({
   onContinue,
   children,
 }: BookingFrameProps) {
-  const { phoneShell } = useResponsive();
   const { draft } = usePlan();
   const quote = quoteBooking(draft);
 
   return (
-    <View style={styles.page}>
-      <SafeAreaView style={[styles.shell, { maxWidth: phoneShell }]} edges={['top', 'left', 'right', 'bottom']}>
+    <AppScreen backgroundColor="#07070A">
         <View style={styles.header}>
           <View style={styles.topRow}>
             <View style={styles.brand}>
@@ -58,14 +56,9 @@ export function BookingFrame({
           </View>
         </View>
 
-        <ScrollView
-          style={styles.scroller}
-          contentContainerStyle={styles.body}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
+        <AppScrollView padded={false} contentContainerStyle={styles.body}>
           {children}
-        </ScrollView>
+        </AppScrollView>
 
         <View style={styles.dock}>
           <View style={styles.estimate}>
@@ -87,26 +80,15 @@ export function BookingFrame({
             <ArrowRight color="#FFFFFF" size={18} />
           </Pressable>
         </View>
-      </SafeAreaView>
-    </View>
+    </AppScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    backgroundColor: '#07070A',
-    alignItems: 'center',
-  },
-  shell: {
-    flex: 1,
-    width: '100%',
-    backgroundColor: Colors.ink,
-  },
   header: {
-    paddingHorizontal: 16,
-    paddingTop: 4,
-    paddingBottom: 8,
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.xs,
+    paddingBottom: Spacing.sm,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'rgba(255,255,255,0.06)',
     backgroundColor: 'rgba(12,11,16,0.92)',
@@ -175,23 +157,19 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.pink,
     boxShadow: '0 0 8px rgba(255,45,120,0.6)',
   },
-  scroller: {
-    flex: 1,
-    minHeight: 0,
-  },
   body: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 20,
-    gap: 16,
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.md,
+    paddingBottom: Spacing.lg,
+    gap: Spacing.md,
   },
   dock: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    paddingHorizontal: 16,
-    paddingTop: 10,
-    paddingBottom: 10,
+    gap: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.sm,
+    paddingBottom: Spacing.sm,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: 'rgba(255,255,255,0.06)',
     backgroundColor: 'rgba(12,11,16,0.94)',

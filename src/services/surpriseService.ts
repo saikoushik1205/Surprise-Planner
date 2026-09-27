@@ -12,6 +12,10 @@ type ApiSurprise = {
   description: string;
   status: string;
   city?: string;
+  venue?: string;
+  landmark?: string;
+  lat?: number;
+  lng?: number;
   relationship?: string;
   createdAt: string;
 };
@@ -43,6 +47,10 @@ function toSurprise(item: ApiSurprise): Surprise {
     status: FROM_API_STATUS[item.status] ?? 'Planned',
     createdAt: item.createdAt,
     city: item.city,
+    venue: item.venue,
+    landmark: item.landmark,
+    lat: item.lat,
+    lng: item.lng,
     relationship: item.relationship,
   };
 }
@@ -57,6 +65,10 @@ function toApiInput(input: SurpriseInput) {
     description: input.description,
     status: TO_API_STATUS[input.status],
     city: input.city,
+    venue: input.venue,
+    landmark: input.landmark,
+    lat: input.lat,
+    lng: input.lng,
     relationship: input.relationship,
   };
 }

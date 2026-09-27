@@ -194,7 +194,7 @@ type PhotonFeature = {
 async function searchPhoton(query: string, city: string): Promise<PlaceHit[]> {
   const bias = CITY_COORDS[city] ?? CITY_COORDS.Hyderabad;
   const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=6&lat=${bias.lat}&lon=${bias.lng}`;
-  const response = await fetch(url, { headers: { Accept: 'application/json' } });
+  const response = await fetch(url, { headers: OSM_HEADERS });
   if (!response.ok) {
     return [];
   }
@@ -247,13 +247,15 @@ export async function searchPlaces(query: string, city: string): Promise<PlaceHi
   const queries = city && !trimmed.toLowerCase().includes(city.toLowerCase()) ? [trimmed, `${trimmed}, ${city}`] : [trimmed];
 
   if (Platform.OS !== 'web') {
-    try {
-      const photon = await searchPhoton(queries[0], city);
-      if (photon.length) {
-        return photon;
+    for (const nextQuery of queries) {
+      try {
+        const photon = await searchPhoton(nextQuery, city);
+        if (photon.length) {
+          return photon;
+        }
+      } catch {
+        // Native builds often lack a working Google Places key; keep searching.
       }
-    } catch {
-      // Native builds often lack a working Google Places key; keep searching.
     }
   }
 
@@ -340,7 +342,42 @@ export async function resolveGooglePlace(placeId: string): Promise<PlaceHit | nu
   );
 }
 
+async function reversePhoton(lat: number, lng: number, fallbackCity: string): Promise<PlaceHit | null> {
+  try {
+    const response = await fetch(`https://photon.komoot.io/reverse?lat=${lat}&lon=${lng}`, {
+      headers: OSM_HEADERS,
+    });
+    if (!response.ok) {
+      return null;
+    }
+    const json = (await response.json()) as { features?: PhotonFeature[] };
+    const item = json.features?.[0];
+    const label = item?.properties?.name || item?.properties?.street || 'Current location';
+    const city = item?.properties?.city || fallbackCity;
+    const detail = [item?.properties?.name, item?.properties?.street, city, item?.properties?.state]
+      .filter(Boolean)
+      .join(', ');
+    return {
+      id: `geo-${lat}-${lng}`,
+      label,
+      detail: detail || label,
+      area: item?.properties?.district || item?.properties?.name || label,
+      city,
+      address: detail || label,
+      lat,
+      lng,
+      source: 'osm',
+    };
+  } catch {
+    return null;
+  }
+}
+
 async function reverseNominatim(lat: number, lng: number, fallbackCity: string): Promise<PlaceHit> {
+  const photon = await reversePhoton(lat, lng, fallbackCity);
+  if (photon) {
+    return photon;
+  }
   try {
     const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1`;
     const response = await fetch(url, { headers: OSM_HEADERS });
@@ -394,6 +431,16 @@ export function mapEmbedUrl(lat: number, lng: number) {
   return `https://www.openstreetmap.org/export/embed.html?bbox=${lng - pad},${lat - pad},${lng + pad},${lat + pad}&layer=mapnik&marker=${lat},${lng}`;
 }
 
+function lon2tile(lon: number, zoom: number) {
+  return Math.floor(((lon + 180) / 360) * 2 ** zoom);
+}
+
+function lat2tile(lat: number, zoom: number) {
+  const rad = (lat * Math.PI) / 180;
+  return Math.floor(((1 - Math.log(Math.tan(rad) + 1 / Math.cos(rad)) / Math.PI) / 2) * 2 ** zoom);
+}
+
 export function mapImageUrl(lat: number, lng: number) {
-  return `https://staticmap.openstreetmap.de/staticmap.php?center=${lat},${lng}&zoom=16&size=640x320&markers=${lat},${lng},red-pushpin`;
+  const zoom = 16;
+  return `https://tile.openstreetmap.org/${zoom}/${lon2tile(lng, zoom)}/${lat2tile(lat, zoom)}.png`;
 }

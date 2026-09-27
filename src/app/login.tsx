@@ -10,8 +10,10 @@ import {
   MissionLaunch,
   MissionSocial,
   RememberRow,
+  SandboxCard,
   VaultLine,
 } from '@/components/auth/MissionControls';
+import { TEST_ACCOUNT, TEST_CREW_ACCOUNT } from '@/data/mockUsers';
 import { Banner } from '@/components/Banner';
 import { Fonts } from '@/constants/theme';
 import { getAuthErrorMessage, useAuth } from '@/context/AuthContext';
@@ -31,8 +33,10 @@ export default function LoginScreen() {
   const params = useLocalSearchParams<{ next?: string; role?: string }>();
   const next = Array.isArray(params.next) ? params.next[0] : params.next;
   const role = authRoleFromParam(params.role);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const sandbox = role === 'crew' ? TEST_CREW_ACCOUNT : TEST_ACCOUNT;
+  const [email, setEmail] = useState(role === 'crew' ? sandbox.email : '');
+  const [password, setPassword] = useState(role === 'crew' ? sandbox.password : '');
+  const [passwordFieldKey, setPasswordFieldKey] = useState(0);
   const [rememberMe, setRememberMe] = useState(true);
   const [errors, setErrors] = useState<ReturnType<typeof validateLogin>>({});
   const [formError, setFormError] = useState<string | null>(null);
@@ -60,7 +64,11 @@ export default function LoginScreen() {
     setInfo(null);
 
     try {
-      const nextUser = await login({ email, password });
+      const nextUser = await login({
+        email,
+        password,
+        ...(role ? { role } : {}),
+      });
       if (!rememberMe) {
         setEmail('');
       }
@@ -69,7 +77,11 @@ export default function LoginScreen() {
         router.replace((nextUser.crewStatus === 'approved' ? '/crew' : '/crew/pending') as never);
         return;
       }
-      router.replace(nextPath(role === 'crew' ? '/' : params.next) as never);
+      if (role === 'crew') {
+        setFormError('This is a customer account. Use the crew sandbox credentials to open the crew dashboard.');
+        return;
+      }
+      router.replace(nextPath(params.next) as never);
     } catch (error) {
       setFormError(getAuthErrorMessage(error));
     } finally {
@@ -135,6 +147,7 @@ export default function LoginScreen() {
             </Pressable>
           </View>
           <MissionField
+            key={`password-${passwordFieldKey}`}
             label=""
             icon="lock"
             placeholder="••••••••••••"
@@ -160,6 +173,17 @@ export default function LoginScreen() {
           label={cta}
           onPress={() => {
             void handleLogin();
+          }}
+        />
+
+        <SandboxCard
+          label={role === 'crew' ? 'Crew sandbox' : 'Customer sandbox'}
+          email={sandbox.email}
+          password={sandbox.password}
+          onAutofill={() => {
+            setEmail(sandbox.email);
+            setPassword(sandbox.password);
+            setPasswordFieldKey((current) => current + 1);
           }}
         />
       </View>
@@ -199,8 +223,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
     paddingHorizontal: 8,
-    paddingTop: 18,
-    paddingBottom: 12,
+    paddingTop: 12,
+    paddingBottom: 8,
   },
   switch: {
     color: AuthNight.muted,

@@ -1,4 +1,4 @@
-import { Calendar, IndianRupee, User } from 'lucide-react-native';
+import { Calendar, IndianRupee, MapPin, User } from 'lucide-react-native';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { StatusBadge } from '@/components/StatusBadge';
@@ -36,6 +36,12 @@ export function SurpriseCard({ surprise, onPress }: SurpriseCardProps) {
           <IndianRupee color={Colors.muted} size={15} />
           <Text style={styles.metaText}>{formatBudget(surprise.budget)}</Text>
         </View>
+        {surprise.venue || surprise.city ? (
+          <View style={styles.meta}>
+            <MapPin color={Colors.muted} size={15} />
+            <Text style={styles.metaText}>{surprise.venue || surprise.city}</Text>
+          </View>
+        ) : null}
       </View>
     </Pressable>
   );

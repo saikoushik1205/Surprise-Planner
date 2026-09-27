@@ -11,18 +11,16 @@ import {
 } from 'lucide-react-native';
 import type { ReactNode } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CrewColors, CrewFonts, CrewRadius, CrewShadow, CrewSpace } from '@/constants/crewTheme';
-import { CREW_PERFORMANCE } from '@/data/crewTasks';
 import { useAuth } from '@/context/AuthContext';
+import { useCrewJobs } from '@/context/CrewJobsContext';
 import { usePlan } from '@/context/PlanContext';
 
 export default function CrewProfileScreen() {
   const { user, logout } = useAuth();
+  const { performance } = useCrewJobs();
   const { crew } = usePlan();
-  const insets = useSafeAreaInsets();
-
   const name = crew?.name ?? user?.name ?? 'Rahul Sharma';
   const email = user?.email ?? 'rahul.s@surpriseplanner.com';
   const phone = crew?.phone ?? '+91 98765 43210';
@@ -35,11 +33,11 @@ export default function CrewProfileScreen() {
   return (
     <ScrollView
       style={styles.page}
-      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 32 }]}
+      contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}>
 
       {/* Profile header */}
-      <View style={[styles.profileHeader, { paddingTop: insets.top + 20 }]}>
+      <View style={styles.profileHeader}>
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>{initials}</Text>
         </View>
@@ -52,16 +50,16 @@ export default function CrewProfileScreen() {
 
       {/* Stats */}
       <View style={styles.statsRow}>
-        <StatCard icon="⭐" value={String(CREW_PERFORMANCE.rating)} label="Rating" color="#f59e0b" />
-        <StatCard icon="💼" value={String(CREW_PERFORMANCE.totalJobs)} label="Total Jobs" color={CrewColors.muted} />
-        <StatCard icon="🏆" value={String(CREW_PERFORMANCE.completed)} label="Completed" color={CrewColors.green} />
+        <StatCard icon="⭐" value={String(performance.rating)} label="Rating" color="#f59e0b" />
+        <StatCard icon="💼" value={String(performance.totalJobs)} label="Total Jobs" color={CrewColors.muted} />
+        <StatCard icon="🏆" value={String(performance.completed)} label="Completed" color={CrewColors.green} />
       </View>
 
       {/* Crew ID card */}
       <View style={styles.crewIdCard}>
-        <IdField label="CREW ID" value={CREW_PERFORMANCE.crewId} />
-        <IdField label="JOINED" value={CREW_PERFORMANCE.joinedDate} />
-        <IdField label="CITY" value={CREW_PERFORMANCE.city} />
+        <IdField label="CREW ID" value={performance.crewId} />
+        <IdField label="JOINED" value={performance.joinedDate} />
+        <IdField label="CITY" value={performance.city} />
       </View>
 
       {/* Menu */}
@@ -158,7 +156,7 @@ function MenuItem({
 
 const styles = StyleSheet.create({
   page: { flex: 1, backgroundColor: CrewColors.bg },
-  content: { gap: 16 },
+  content: { gap: 16, paddingBottom: 16 },
 
   // Profile header
   profileHeader: {
@@ -166,7 +164,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 16,
     paddingHorizontal: CrewSpace.screen,
-    paddingBottom: 20,
+    paddingTop: 16,
+    paddingBottom: 16,
     backgroundColor: '#0e0e1a',
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(124,58,237,0.2)',

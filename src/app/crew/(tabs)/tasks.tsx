@@ -1,41 +1,31 @@
 import { Clock, MapPin } from 'lucide-react-native';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CrewColors, CrewFonts, CrewRadius, CrewShadow, CrewSpace } from '@/constants/crewTheme';
 import {
-  COMPLETED_TASKS,
   STATUS_CONFIG,
   TASK_CATEGORY_EMOJI,
-  TODAY_TASKS,
-  UPCOMING_TASKS,
   type CrewTask,
 } from '@/data/crewTasks';
+import { useCrewJobs } from '@/context/CrewJobsContext';
 
 type Tab = 'today' | 'upcoming' | 'completed';
 
-const TABS: { id: Tab; label: string; count: number }[] = [
-  { id: 'today', label: 'Today', count: TODAY_TASKS.length },
-  { id: 'upcoming', label: 'Upcoming', count: UPCOMING_TASKS.length },
-  { id: 'completed', label: 'Completed', count: COMPLETED_TASKS.length },
-];
-
-function getTasksForTab(tab: Tab): CrewTask[] {
-  if (tab === 'today') return TODAY_TASKS;
-  if (tab === 'upcoming') return UPCOMING_TASKS;
-  return COMPLETED_TASKS;
-}
-
 export default function CrewTasksScreen() {
-  const insets = useSafeAreaInsets();
+  const { todayTasks, upcomingTasks, completedTasks } = useCrewJobs();
   const [activeTab, setActiveTab] = useState<Tab>('today');
-  const tasks = getTasksForTab(activeTab);
+  const TABS: { id: Tab; label: string; count: number }[] = [
+    { id: 'today', label: 'Today', count: todayTasks.length },
+    { id: 'upcoming', label: 'Upcoming', count: upcomingTasks.length },
+    { id: 'completed', label: 'Completed', count: completedTasks.length },
+  ];
+  const tasks = activeTab === 'today' ? todayTasks : activeTab === 'upcoming' ? upcomingTasks : completedTasks;
 
   return (
     <View style={styles.page}>
       {/* Fixed header */}
-      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
+      <View style={styles.header}>
         <Text style={styles.title}>Tasks</Text>
         <Text style={styles.subtitle}>Manage your pickups, setups, and deliveries.</Text>
 
@@ -68,7 +58,7 @@ export default function CrewTasksScreen() {
       {/* Task list */}
       <ScrollView
         style={styles.list}
-        contentContainerStyle={[styles.listContent, { paddingBottom: 24 }]}
+        contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}>
         {tasks.length === 0 ? (
           <View style={styles.empty}>
@@ -118,6 +108,7 @@ const styles = StyleSheet.create({
 
   header: {
     paddingHorizontal: CrewSpace.screen,
+    paddingTop: 16,
     paddingBottom: 12,
     backgroundColor: CrewColors.bg,
     borderBottomWidth: 1,

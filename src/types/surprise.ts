@@ -13,6 +13,10 @@ export type Surprise = {
   status: SurpriseStatus;
   createdAt: string;
   city?: string;
+  venue?: string;
+  landmark?: string;
+  lat?: number;
+  lng?: number;
   relationship?: string;
 };
 
@@ -25,6 +29,8 @@ export type SurpriseDraft = {
   description: string;
   status: SurpriseStatus;
   city?: string;
+  venue?: string;
+  landmark?: string;
   relationship?: string;
 };
 
@@ -37,5 +43,9 @@ export type SurpriseInput = {
   description: string;
   status: SurpriseStatus;
   city?: string;
+  venue?: string;
+  landmark?: string;
+  lat?: number;
+  lng?: number;
   relationship?: string;
 };

@@ -1,11 +1,11 @@
 import { router } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
 import type { ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Pressable, StyleSheet } from 'react-native';
 
+import { AppScreen } from '@/components/layout/AppScreen';
+import { AppScrollView } from '@/components/layout/AppScrollView';
 import { CrewColors, CrewSpace } from '@/constants/crewTheme';
-import { useResponsive } from '@/hooks/useResponsive';
 
 type CrewScreenProps = {
   children: ReactNode;
@@ -13,10 +13,7 @@ type CrewScreenProps = {
   inTabs?: boolean;
 };
 
-export function CrewScreen({ children, back = false, inTabs = false }: CrewScreenProps) {
-  const insets = useSafeAreaInsets();
-  const { phoneShell } = useResponsive();
-
+export function CrewScreen({ children, back = false }: CrewScreenProps) {
   function goBack() {
     if (router.canGoBack()) {
       router.back();
@@ -26,50 +23,32 @@ export function CrewScreen({ children, back = false, inTabs = false }: CrewScree
   }
 
   return (
-    <View style={styles.page}>
-      <ScrollView
-        style={[styles.scroll, { maxWidth: phoneShell }]}
-        contentContainerStyle={[
-          styles.content,
-          { paddingTop: insets.top + (back ? 4 : 24), paddingBottom: inTabs ? 32 : insets.bottom + 32 },
-        ]}
-        showsVerticalScrollIndicator={false}>
+    <AppScreen backgroundColor={CrewColors.bg}>
+      <AppScrollView padded={false} contentContainerStyle={styles.content}>
         {back ? (
           <Pressable accessibilityRole="button" accessibilityLabel="Go back" onPress={goBack} style={styles.back}>
             <ChevronLeft size={24} color={CrewColors.text} />
           </Pressable>
         ) : null}
         {children}
-      </ScrollView>
-    </View>
+      </AppScrollView>
+    </AppScreen>
   );
 }
 
 export function CrewShell({ children }: { children: ReactNode }) {
-  const { phoneShell } = useResponsive();
   return (
-    <View style={styles.page}>
-      <View style={[styles.shell, { maxWidth: phoneShell }]}>{children}</View>
-    </View>
+    <AppScreen edges={['top']} backgroundColor={CrewColors.bg}>
+      {children}
+    </AppScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    backgroundColor: CrewColors.bg,
-    alignItems: 'center',
-  },
-  shell: {
-    flex: 1,
-    width: '100%',
-  },
-  scroll: {
-    flex: 1,
-    width: '100%',
-  },
   content: {
     paddingHorizontal: CrewSpace.screen,
+    paddingTop: 8,
+    paddingBottom: 16,
   },
   back: {
     width: 48,

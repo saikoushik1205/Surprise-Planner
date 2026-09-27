@@ -1,16 +1,16 @@
 import { Calendar, MapPin, Users } from 'lucide-react-native';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CrewColors, CrewFonts, CrewRadius, CrewShadow, CrewSpace } from '@/constants/crewTheme';
-import { MOCK_SURPRISES, STATUS_CONFIG, type CrewSurprise } from '@/data/crewTasks';
+import { STATUS_CONFIG, type CrewSurprise } from '@/data/crewTasks';
+import { useCrewJobs } from '@/context/CrewJobsContext';
 
 export default function CrewSurprisesScreen() {
-  const insets = useSafeAreaInsets();
+  const { surprises } = useCrewJobs();
 
   return (
     <View style={styles.page}>
-      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
+      <View style={styles.header}>
         <Text style={styles.title}>Surprises</Text>
         <Text style={styles.subtitle}>Surprises you&apos;re assigned to work on.</Text>
       </View>
@@ -19,7 +19,10 @@ export default function CrewSurprisesScreen() {
         style={styles.list}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}>
-        {MOCK_SURPRISES.map((s) => (
+        {surprises.length === 0 ? (
+          <Text style={styles.empty}>No assigned surprises yet. A customer launch will land here.</Text>
+        ) : null}
+        {surprises.map((s) => (
           <SurpriseCard key={s.id} surprise={s} />
         ))}
       </ScrollView>
@@ -97,6 +100,7 @@ const styles = StyleSheet.create({
 
   header: {
     paddingHorizontal: CrewSpace.screen,
+    paddingTop: 16,
     paddingBottom: 12,
     backgroundColor: CrewColors.bg,
     borderBottomWidth: 1,
@@ -104,6 +108,7 @@ const styles = StyleSheet.create({
   },
   title: { color: CrewColors.text, fontFamily: CrewFonts.display, fontSize: 26, lineHeight: 32 },
   subtitle: { color: CrewColors.muted, fontFamily: CrewFonts.body, fontSize: 14, marginTop: 2 },
+  empty: { color: CrewColors.muted, fontFamily: CrewFonts.body, fontSize: 14, lineHeight: 20 },
 
   list: { flex: 1 },
   listContent: { paddingHorizontal: CrewSpace.screen, paddingTop: 16, paddingBottom: 24, gap: 14 },

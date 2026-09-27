@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
   feed: {
     paddingHorizontal: 16,
     paddingTop: 12,
-    paddingBottom: 28,
+    paddingBottom: 16,
     gap: 14,
   },
   hero: {

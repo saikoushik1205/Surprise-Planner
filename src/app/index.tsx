@@ -268,8 +268,8 @@ const styles = StyleSheet.create({
   feed: {
     paddingHorizontal: 16,
     paddingTop: 12,
-    paddingBottom: 28,
-    gap: 28,
+    paddingBottom: 16,
+    gap: 20,
   },
   hero: {
     alignItems: 'center',

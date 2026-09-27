@@ -18,6 +18,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
 import { Colors } from '@/constants/theme';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { PlanProvider } from '@/context/PlanContext';
@@ -53,14 +55,16 @@ export default function RootLayout() {
   }
 
   return (
-    <AuthProvider>
-      <SurpriseProvider>
-        <PlanProvider>
-          <StatusBar style="light" />
-          <RootNavigator />
-        </PlanProvider>
-      </SurpriseProvider>
-    </AuthProvider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <SurpriseProvider>
+          <PlanProvider>
+            <StatusBar style="light" />
+            <RootNavigator />
+          </PlanProvider>
+        </SurpriseProvider>
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }
 

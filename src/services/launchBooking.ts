@@ -37,6 +37,11 @@ export function buildLaunchInput(draft: PlanDraft): { input: SurpriseInput; reve
         .join(' '),
       status: 'Launched',
       city: draft.city,
+      venue: [draft.address, draft.area, draft.venue].filter(Boolean).join(', ') || draft.city,
+      landmark: draft.landmark.trim() || undefined,
+      lat: draft.lat ?? undefined,
+      lng: draft.lng ?? undefined,
+      relationship: draft.relationship || undefined,
     },
   };
 }

@@ -1,38 +1,83 @@
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { ArrowRight, Target } from 'lucide-react-native';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useCallback } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppFrame } from '@/components/AppFrame';
-import { Colors, Fonts } from '@/constants/theme';
+import { SurpriseCard } from '@/components/SurpriseCard';
+import { Colors, Fonts, Spacing } from '@/constants/theme';
+import { useSurprises } from '@/context/SurpriseContext';
 
 export default function TrackerHomeScreen() {
+  const { surprises, isHydrated, refresh } = useSurprises();
+
+  useFocusEffect(
+    useCallback(() => {
+      void refresh();
+    }, [refresh]),
+  );
+
+  const missions = surprises.filter((item) => item.status === 'Launched' || item.status === 'Planned');
+
   return (
     <AppFrame>
-      <View style={styles.screen}>
-        <View style={styles.center}>
-          <View style={styles.iconRing}>
-            <View style={styles.iconInner}>
-              <Target color={Colors.pink} size={36} />
+      {isHydrated && missions.length > 0 ? (
+        <ScrollView
+          style={styles.scroller}
+          contentContainerStyle={styles.list}
+          showsVerticalScrollIndicator={false}
+        >
+          <Text style={styles.listTitle}>Active missions</Text>
+          {missions.map((surprise) => (
+            <SurpriseCard
+              key={surprise.id}
+              surprise={surprise}
+              onPress={() => router.push(`/track/${surprise.id}` as never)}
+            />
+          ))}
+        </ScrollView>
+      ) : (
+        <View style={styles.screen}>
+          <View style={styles.center}>
+            <View style={styles.iconRing}>
+              <View style={styles.iconInner}>
+                <Target color={Colors.pink} size={36} />
+              </View>
             </View>
+            <Text style={styles.title}>No active missions</Text>
+            <Text style={styles.copy}>Launch a surprise and track your crew in real time here.</Text>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Create Surprise"
+              onPress={() => router.push('/book/target')}
+              style={({ pressed }) => [styles.cta, pressed && styles.pressed]}
+            >
+              <Text style={styles.ctaLabel}>Create Surprise</Text>
+              <ArrowRight color="#FFFFFF" size={18} />
+            </Pressable>
           </View>
-          <Text style={styles.title}>No active missions</Text>
-          <Text style={styles.copy}>Launch a surprise and track your crew in real time here.</Text>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Create Surprise"
-            onPress={() => router.push('/book/target')}
-            style={({ pressed }) => [styles.cta, pressed && styles.pressed]}
-          >
-            <Text style={styles.ctaLabel}>Create Surprise</Text>
-            <ArrowRight color="#FFFFFF" size={18} />
-          </Pressable>
         </View>
-      </View>
+      )}
     </AppFrame>
   );
 }
 
 const styles = StyleSheet.create({
+  scroller: {
+    flex: 1,
+    minHeight: 0,
+  },
+  list: {
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.md,
+    paddingBottom: Spacing.lg,
+    gap: Spacing.md,
+  },
+  listTitle: {
+    color: Colors.snow,
+    fontFamily: Fonts.uiBold,
+    fontSize: 20,
+  },
   screen: {
     flex: 1,
     minHeight: 0,
