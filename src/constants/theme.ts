@@ -1,65 +1,72 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
+import { Platform } from 'react-native';
 
 import '@/global.css';
 
-import { Platform } from 'react-native';
-
 export const Colors = {
-  light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
-  },
-  dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
-  },
+  ink: '#0C0B10',
+  snow: '#E6E1E8',
+  pink: '#FF2D78',
+  pinkHot: '#FF4C83',
+  pinkMuted: 'rgba(255, 45, 120, 0.12)',
+  panel: '#1B1922',
+  raised: '#1E1C26',
+  muted: '#A1A1AA',
+  border: '#2B2737',
+  danger: '#FFB4AB',
+  success: '#25D366',
+  overlay: 'rgba(12, 11, 16, 0.72)',
 } as const;
 
-export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
+export const StatusColors: Record<string, string> = {
+  Draft: '#9A96A8',
+  Planned: '#FF2D8A',
+  Launched: '#2EE6B6',
+  Completed: '#8B83FF',
+};
 
-export const Fonts = Platform.select({
-  ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
-    sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
-    serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
-    rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
-    mono: 'ui-monospace',
-  },
-  default: {
-    sans: 'normal',
-    serif: 'serif',
-    rounded: 'normal',
-    mono: 'monospace',
-  },
-  web: {
-    sans: 'var(--font-display)',
-    serif: 'var(--font-serif)',
-    rounded: 'var(--font-rounded)',
-    mono: 'var(--font-mono)',
-  },
-});
+export const Fonts = {
+  display: 'Syne_700Bold',
+  displayExtra: 'Syne_800ExtraBold',
+  ui: 'SpaceGrotesk_600SemiBold',
+  uiBold: 'SpaceGrotesk_700Bold',
+  uiMedium: 'SpaceGrotesk_500Medium',
+  jakarta: 'PlusJakartaSans_400Regular',
+  jakartaMedium: 'PlusJakartaSans_500Medium',
+  jakartaSemi: 'PlusJakartaSans_600SemiBold',
+  jakartaBold: 'PlusJakartaSans_700Bold',
+  jakartaExtra: 'PlusJakartaSans_800ExtraBold',
+  body: 'Inter_400Regular',
+  bodyMedium: 'Inter_500Medium',
+  bodySemi: 'Inter_600SemiBold',
+  fallback: Platform.select({
+    ios: 'System',
+    android: 'sans-serif',
+    default: 'system-ui',
+  }),
+} as const;
 
 export const Spacing = {
-  half: 2,
-  one: 4,
-  two: 8,
-  three: 16,
-  four: 24,
-  five: 32,
-  six: 64,
+  xs: 4,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 24,
+  xxl: 32,
+  xxxl: 48,
 } as const;
 
-export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;
-export const MaxContentWidth = 800;
+export const Radius = {
+  sm: 12,
+  md: 16,
+  lg: 20,
+  xl: 28,
+  pill: 999,
+} as const;
+
+export const Layout = {
+  phone: 430,
+  mobileMax: 560,
+  tablet: 768,
+  desktop: 1024,
+  contentMax: 960,
+} as const;

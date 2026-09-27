@@ -31,7 +31,13 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
 .env*.local
+.env.production
+server/.env
+
+# backend lives in its own git repo
+/server/
 
 # typescript
 *.tsbuildinfo
@@ -41,3 +47,6 @@ example
 # generated native folders
 /ios
 /android
+
+# local design references
+.tmp-stitch-booking/

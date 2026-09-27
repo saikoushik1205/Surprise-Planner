@@ -1,0 +1,24 @@
+# Static web app. The API stays on the existing Render service.
+# After the first deploy, set CLIENT_URL on that API service to this site's origin.
+services:
+  - type: web
+    name: surprise-planner-web
+    runtime: static
+    buildCommand: npm ci && npx expo export --platform web
+    staticPublishPath: ./dist
+    envVars:
+      - key: NODE_VERSION
+        value: 22.14.0
+      - key: EXPO_PUBLIC_API_URL
+        value: https://suprise-planner-app.onrender.com/api
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /_expo/static/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /index.html
+        name: Cache-Control
+        value: no-cache

@@ -1,9 +1,78 @@
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  background: #0c0b10;
+  overscroll-behavior: none;
+}
+
+#root > div {
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+body {
+  overflow: hidden;
+}
+
+.app-shell {
+  height: 100%;
+  max-height: 100dvh;
+  overflow: hidden !important;
+  max-width: 430px;
+  width: 100%;
+  overscroll-behavior: none;
+}
+
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
 :root {
-  --font-display:
-    Spline Sans, Inter, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji,
-    Segoe UI Symbol, Noto Color Emoji;
+  --font-display: Syne, ui-sans-serif, system-ui, sans-serif;
+  --font-ui: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
   --font-mono:
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
-  --font-rounded: 'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif;
-  --font-serif: Georgia, 'Times New Roman', serif;
+}
+
+*:focus,
+*:focus-visible,
+input,
+textarea,
+select,
+button {
+  outline: none !important;
+  outline-width: 0 !important;
+  outline-color: transparent !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+button:focus,
+[contenteditable]:focus {
+  box-shadow: none !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #1e1c26 inset;
+  box-shadow: 0 0 0 1000px #1e1c26 inset;
+  -webkit-text-fill-color: #e6e1e8;
+  caret-color: #e6e1e8;
+  transition: background-color 9999s ease-out;
 }
